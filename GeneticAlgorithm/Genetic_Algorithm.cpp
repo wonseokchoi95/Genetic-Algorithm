@@ -297,7 +297,7 @@ CrossOver::CrossOver(Chromosome & parent1, Chromosome & parent2)
 				child1.UpdateGene(parent1.getXSize() * y + x, blk1);
 
 				Gene blk2(x, y, parent2.Getblks()[parent2.getXSize() * y + x].In, parent2.Getblks()[parent1.getXSize() * y + x].Out);
-
+				 
 				child2_tmp.push_back(blk1);
 				std::sort(child2_tmp.begin(), child2_tmp.end());
 				//child2.UpdateGene(parent1.getXSize() * y + x, blk2);
