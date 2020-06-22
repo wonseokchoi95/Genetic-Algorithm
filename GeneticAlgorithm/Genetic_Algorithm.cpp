@@ -42,12 +42,6 @@ Chromosome::Chromosome()
 Chromosome::Chromosome(std::vector<InOut> list)
 	: order_(list.size()), cost(0), in_cost(0), out_cost(0), blk_x_size(static_cast<int> (sqrt(list.size()))), blk_y_size(static_cast<int> (sqrt(list.size())))
 {
-	CalcInCost();
-	CalcOutCost();
-	CalcCost();
-
-
-
 	for (int y = 0; y < blk_y_size; y++)
 	{
 		for (int x = 0; x < blk_x_size; x++)
@@ -59,6 +53,11 @@ Chromosome::Chromosome(std::vector<InOut> list)
 			this->blks.push_back(blk);
 		}
 	}
+
+
+	CalcInCost();
+	CalcOutCost();
+	CalcCost();
 }
 
 Chromosome::~Chromosome()

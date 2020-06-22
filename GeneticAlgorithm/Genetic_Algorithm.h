@@ -8,7 +8,7 @@
 #include <iostream>
 #include <string>
 
-const static int NumofGene = 16;
+const static int NumofGene = 100;
 
 struct Gene
 {
