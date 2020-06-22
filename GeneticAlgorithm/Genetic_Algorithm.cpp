@@ -84,7 +84,7 @@ int Chromosome::UpdateGene(std::vector<int> atlist, std::vector<Gene> genelist)
 	if (atlist.size() != genelist.size())
 		std::cout << "size is not fit" << std::endl;
 	
-	for (unsigned int i = 0; i < atlist.size(); i++)
+	for (int i = 0; i < atlist.size(); i++)
 	{
 		blks.at(atlist[i]).In = genelist[i].In;
 		blks.at(atlist[i]).Out = genelist[i].Out;
@@ -280,12 +280,12 @@ CrossOver::CrossOver(Chromosome & parent1, Chromosome & parent2)
 {
 	length = parent1.getXSize() * parent1.getYSize();
 	BitArrayBuilder();
-
+	Print();
 	Chromosome child1;
 	Chromosome child2;
 	std::vector<Gene> child1_tmp;
 	std::vector<Gene> child2_tmp;
-	
+
 	for (int y = 0; y < parent1.getYSize(); y++)
 	{
 		for (int x = 0; x < parent1.getXSize(); x++)
@@ -299,19 +299,20 @@ CrossOver::CrossOver(Chromosome & parent1, Chromosome & parent2)
 				Gene blk2(x, y, parent2.Getblks()[parent2.getXSize() * y + x].In, parent2.Getblks()[parent1.getXSize() * y + x].Out);
 
 				child2_tmp.push_back(blk1);
-				//std::sort(child2_tmp.begin(), child2_tmp.end());
+				std::sort(child2_tmp.begin(), child2_tmp.end());
 				//child2.UpdateGene(parent1.getXSize() * y + x, blk2);
 			}
+
 			// If the bit is 0, copy the parent 1 to child 2, and parent 2 to child 1.
 			else {
 				// Parent 1의 블록들은 저장한 후, Parent 2의 해당 위치 크기 순으로 재배치한다.
 
 				Gene blk1(x, y, parent2.Getblks()[parent2.getXSize() * y + x].In, parent2.Getblks()[parent1.getXSize() * y + x].Out);
 				child1.UpdateGene(parent1.getXSize() * y + x, blk1);
-				
+
 				Gene blk2(x, y, parent1.Getblks()[parent1.getXSize() * y + x].In, parent1.Getblks()[parent1.getXSize() * y + x].Out);
 				child1_tmp.push_back(blk2);
-				//std::sort(child1_tmp.begin(), child1_tmp.end());
+				std::sort(child1_tmp.begin(), child1_tmp.end());
 				//child2.UpdateGene(parent1.getXSize() * y + x, blk2);
 
 			}
@@ -319,11 +320,40 @@ CrossOver::CrossOver(Chromosome & parent1, Chromosome & parent2)
 	}
 
 	// 모든 데이터를 tmp에 입력한 후, 각자의 parent를 비교하여 재배치한다.
-	std::sort(child1_tmp.begin()->In, child1_tmp.end()->In);
-	std::vector<int> sort1 = SortInValue(child2_tmp);
-	std::vector<int> sort2 = SortInValue(child1_tmp);
 
+	// start with first-in block.
+	for (unsigned int In = 1; In <= parent1.Getblks().size(); In++)
+	{
+		for (unsigned int i = 0; i < child2.Getblks().size(); i++)
+		{
+				if (parent2.Getblks()[i].In == In && bit_array[i] == 0)
+			{
+				Gene blk(child2.Getblks()[i].x, child2.Getblks()[i].y, child1_tmp.front().In, child1_tmp.front().Out);
 
+				// Delete front-In data.
+				child1_tmp.erase(child1_tmp.begin());
+				child1.UpdateGene(child1.getXSize() * child2.Getblks()[i].y + child2.Getblks()[i].x, blk);
+			}
+		}
+
+	}
+
+	// start with first-in block.
+	for (unsigned int In = 1; In <= parent2.Getblks().size(); In++)
+	{
+		for (unsigned int i = 0; i < child1.Getblks().size(); i++)
+		{
+			if (parent1.Getblks()[i].In == In && bit_array[i] == 1)
+			{
+				Gene blk(child1.Getblks()[i].x, child1.Getblks()[i].y, child2_tmp.front().In, child2_tmp.front().Out);
+
+				// Delete front-In data.
+				child2_tmp.erase(child2_tmp.begin());
+				child2.UpdateGene(child2.getXSize() * child1.Getblks()[i].y + child1.Getblks()[i].x, blk);
+			}
+		}
+
+	}
 
 	// After copy parent, move data from child to parent.
 	parent1 = std::move(child1);
@@ -339,12 +369,23 @@ void CrossOver::BitArrayBuilder()
 {
 	for (int i = 0; i < length; i++)
 	{
-		//srand((unsigned int)time(NULL));
 		int num = (unsigned int)rand() % 2;
 		bit_array.push_back(num);
 		Sleep(1);
 	}
 
+}
+
+void CrossOver::Print()
+{
+	std::cout << "Bit array is" << std::endl;
+
+	for (unsigned int i = 0; i < bit_array.size(); i++)
+	{
+		std::cout << bit_array[i] << "\t";
+		if ((i + 1) % (int)sqrt(length) == 0) std::cout << "\n";
+	}
+	std::cout << "\n";
 }
 
 std::vector<int> CrossOver::SortInValue(std::vector<Gene>)

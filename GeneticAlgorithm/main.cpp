@@ -1,10 +1,11 @@
-#include "Generic_Algorithm.h"
+#include "Genetic_Algorithm.h"
 
 int main()
 {
 
-	std::vector<Chromosome> Population = std::vector<Chromosome>(7);
+	std::vector<Chromosome> Population = std::vector<Chromosome>(30);
 	int Generation = 1;
+	std::vector<int> Cost;
 	
 	// 1. Initialize Population
 	for (unsigned int i = 0; i < Population.size(); i++)
@@ -30,12 +31,12 @@ int main()
 	while (true)
 	{
 		Generation++;
+		Cost.push_back(stoi(Population[0].getCost()));
 		std::cout << "\n# of Generation: " << std::to_string(Generation) << std::endl;
 		// Sort the Chromosome with the cost.
 		// If the cost between two Chromosome are same, sort with the order of Chromosome.
 		std::sort(Population.begin(), Population.end());
 
-		//Population[1].Print();
 		std::cout << "The Order of Cost is : ";
 		for (auto set : Population)
 			std::cout << set.getCost() << " ";
@@ -43,12 +44,13 @@ int main()
 		// 3. Check if  loop can be stopped.
 		// TODO: Conditional statement should be comparement of past one.
 		// If the value difference is not big, Stop GA.
-		if (Population[0].getCost() == std::to_string(0))
+		if (Generation > 30 && (Cost.at(Cost.size()) - Cost.at(Cost.size() - 20)) < 2)
 		{
 			std::cout << "The Least cost of chromosome is" << std::endl;
 			Population[0].Print();
 			break;
 		}
+
 		// 4. Make Next Generation by CrossOver Calculation
 		for (unsigned int i = 1; i < Population.size() / 2; i++)
 		{

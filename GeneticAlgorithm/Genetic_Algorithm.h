@@ -117,6 +117,7 @@ private:
 	CrossOver& operator=(const CrossOver&) {};
 	std::vector<int> bit_array;
 	void BitArrayBuilder();
+	void Print();
 	std::vector<int> SortInValue(std::vector<Gene> genelist);
 public:
 };
