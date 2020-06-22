@@ -3,10 +3,10 @@
 Chromosome::Chromosome()
 	: order_(0), cost(0), in_cost(0), out_cost(0), blk_x_size(0), blk_y_size(0)
 {
-	const int NumofGene = 36;
+	
 	blk_x_size = static_cast<int> (sqrt(NumofGene));
 	blk_y_size = static_cast<int> (sqrt(NumofGene));
-	ListGenerator(NumofGene);
+	//ListGenerator(NumofGene);
 
 	order_ = NumofGene;
 	std::vector<int> order;
@@ -39,12 +39,26 @@ Chromosome::Chromosome()
 	}
 }
 
-Chromosome::Chromosome(std::vector<int> inorder, std::vector<int> outorder)
-	: in_order(inorder), out_order(outorder), order_(0), cost(0), in_cost(0), out_cost(0), blk_x_size(0), blk_y_size(0)
+Chromosome::Chromosome(std::vector<InOut> list)
+	: order_(list.size()), cost(0), in_cost(0), out_cost(0), blk_x_size(static_cast<int> (sqrt(list.size()))), blk_y_size(static_cast<int> (sqrt(list.size())))
 {
-	const int NumofGene = 36;
-	blk_x_size = static_cast<int> (sqrt(NumofGene));
-	blk_y_size = static_cast<int> (sqrt(NumofGene));
+	CalcInCost();
+	CalcOutCost();
+	CalcCost();
+
+
+
+	for (int y = 0; y < blk_y_size; y++)
+	{
+		for (int x = 0; x < blk_x_size; x++)
+		{
+			Gene blk(	x, 
+						y, 
+						list[blk_y_size * y + x].In, 
+						list[blk_y_size * y + x].Out);
+			this->blks.push_back(blk);
+		}
+	}
 }
 
 Chromosome::~Chromosome()
@@ -70,11 +84,11 @@ int Chromosome::UpdateGene(int at, Gene blk)
 	blks.at(at).x = blk.x;
 	blks.at(at).y = blk.y;
 
-	if (this->list.size() != 0)
-	{
-		this->list.clear();
-		this->list.shrink_to_fit();
-	}
+	//if (list.size() != 0)
+	//{
+	//	list.clear();
+	//	list.shrink_to_fit();
+	//}
 
 	return 0;
 }
@@ -97,38 +111,43 @@ int Chromosome::UpdateGene(std::vector<int> atlist, std::vector<Gene> genelist)
 
 int Chromosome::ListGenerator(unsigned int length)
 {		
+	std::vector<int> in_order;
+	std::vector<int> out_order;
+
 	bool x_first_time = false;
 	bool y_first_time = false;
 	while (in_order.size() != length) {
 
 
-		int num = (unsigned int)rand() % length + 1;
+		int num = (int)rand() % length + 1;
 		if (x_first_time == false)
 		{
-			in_order.push_back(num); x_first_time = true; continue;
+			in_order.push_back(num); 
+			x_first_time = true; 
+			continue;
 		}
 		if (num == 0) continue;
-		for (unsigned int num_ = 0; num_ < in_order.size(); num_++)
+		for (int num_ = 0; num_ < in_order.size(); num_++)
 		{
 			if (num == in_order[num_])
 				break;
 			if ((num != in_order[num_]) && (num_ == in_order.size() - 1))
 			{
 				in_order.push_back(num);
-				//std::cout << std::to_string(num) << " ";
+				break;
 			}
 		}
 	}
 	//std::cout << "\n";
 	while (out_order.size() != length) {
 
-		int num = (unsigned int)rand() % length + 1;
+		int num = (int)rand() % length + 1;
 		if (y_first_time == false)
 		{
 			out_order.push_back(num); y_first_time = true; continue;
 		}
 		if (num == 0) continue;
-		for (unsigned int num_ = 0; num_ < out_order.size(); num_++)
+		for (int num_ = 0; num_ < out_order.size(); num_++)
 		{
 			if (num == out_order[num_])
 				break;
@@ -141,7 +160,7 @@ int Chromosome::ListGenerator(unsigned int length)
 	}
 
 	//std::cout << "\n";
-	for (unsigned int i = 0; i < length; i++)
+	for (int i = 0; i < length; i++)
 	{
 		InOut tmp = { i, in_order[i], out_order[i] };
 		list.push_back(tmp);
@@ -280,7 +299,7 @@ CrossOver::CrossOver(Chromosome & parent1, Chromosome & parent2)
 {
 	length = parent1.getXSize() * parent1.getYSize();
 	BitArrayBuilder();
-	Print();
+	//Print();
 	Chromosome child1;
 	Chromosome child2;
 	std::vector<Gene> child1_tmp;
@@ -298,9 +317,8 @@ CrossOver::CrossOver(Chromosome & parent1, Chromosome & parent2)
 
 				Gene blk2(x, y, parent2.Getblks()[parent2.getXSize() * y + x].In, parent2.Getblks()[parent1.getXSize() * y + x].Out);
 				 
-				child2_tmp.push_back(blk1);
+				child2_tmp.push_back(blk2);
 				std::sort(child2_tmp.begin(), child2_tmp.end());
-				//child2.UpdateGene(parent1.getXSize() * y + x, blk2);
 			}
 
 			// If the bit is 0, copy the parent 1 to child 2, and parent 2 to child 1.
@@ -308,12 +326,12 @@ CrossOver::CrossOver(Chromosome & parent1, Chromosome & parent2)
 				// Parent 1의 블록들은 저장한 후, Parent 2의 해당 위치 크기 순으로 재배치한다.
 
 				Gene blk1(x, y, parent2.Getblks()[parent2.getXSize() * y + x].In, parent2.Getblks()[parent1.getXSize() * y + x].Out);
-				child1.UpdateGene(parent1.getXSize() * y + x, blk1);
+				child2.UpdateGene(parent1.getXSize() * y + x, blk1);
 
 				Gene blk2(x, y, parent1.Getblks()[parent1.getXSize() * y + x].In, parent1.Getblks()[parent1.getXSize() * y + x].Out);
+
 				child1_tmp.push_back(blk2);
 				std::sort(child1_tmp.begin(), child1_tmp.end());
-				//child2.UpdateGene(parent1.getXSize() * y + x, blk2);
 
 			}
 		}
@@ -326,7 +344,7 @@ CrossOver::CrossOver(Chromosome & parent1, Chromosome & parent2)
 	{
 		for (unsigned int i = 0; i < child2.Getblks().size(); i++)
 		{
-				if (parent2.Getblks()[i].In == In && bit_array[i] == 0)
+			if (parent2.Getblks()[i].In == In && bit_array[i] == 0)
 			{
 				Gene blk(child2.Getblks()[i].x, child2.Getblks()[i].y, child1_tmp.front().In, child1_tmp.front().Out);
 
@@ -391,4 +409,48 @@ void CrossOver::Print()
 std::vector<int> CrossOver::SortInValue(std::vector<Gene>)
 {
 	return std::vector<int>();
+}
+
+Mutation::Mutation(Chromosome & set)
+{
+	std::vector<InOut> tmp_list;
+	int i = 0;
+	for (auto gene : set.Getblks())
+	{
+		InOut tmp_gene = { i, gene.In, gene.Out };
+		tmp_list.push_back(tmp_gene);
+		i++;
+	}
+
+	std::vector<int> order;
+	bool first_time = false;
+	while (order.size() != list.size())
+	{
+		Sleep(1);
+		int num = (unsigned int)rand() % list.size();
+		if (first_time == false)
+		{
+			order.push_back(num); first_time = true; continue;
+		}
+		for (unsigned int num_ = 0; num_ < order.size(); num_++)
+		{
+			if (num == order[num_])
+				break;
+			if ((num != order[num_]) && (num_ == order.size() - 1))
+				order.push_back(num);
+		}
+	}
+	int j = 0;
+	for (auto& inout : tmp_list)
+	{
+		if (inout.Order != order[j])
+		{
+			std::swap(inout, tmp_list[order[j]]);
+		}
+		j++;
+	}
+
+
+	Chromosome mutated(tmp_list);
+	set = std::move(mutated);
 }

@@ -8,6 +8,8 @@
 #include <iostream>
 #include <string>
 
+const static int NumofGene = 16;
+
 struct Gene
 {
 	Gene(int x_, int y_, int in, int out)
@@ -26,15 +28,26 @@ struct InOut {
 	unsigned int Order;
 	int In;
 	int Out;
+	void swap(InOut& rhs)
+	{
+		unsigned int tmp_order = Order;
+		int tmp_in = In;
+		int tmp_out = Out;
+		this->Order = rhs.Order;
+		this->In = rhs.In;
+		this->Out = rhs.Out;
+
+	}
 };
 
+static std::vector<InOut> list;
 //! Chromosome object has the information about block in-out data.
 //! It can print its data.
 class Chromosome {
 
 public:
 	Chromosome();
-	Chromosome(std::vector<int> inorder, std::vector<int> outorder);
+	Chromosome(std::vector<InOut> list);
 	~Chromosome();
 
 	enum class DIRECTION {
@@ -47,7 +60,6 @@ public:
 private:
 	std::vector<int> in_order;
 	std::vector<int> out_order;
-	std::vector<InOut> list;
 	int order_;
 	int cost;
 	int in_cost;
@@ -55,11 +67,11 @@ private:
 	int blk_x_size;
 	int blk_y_size;
 	std::vector<Gene> blks;
-	int ListGenerator(unsigned int length);
 	void setInCost(int in_cost_) { in_cost = in_cost_; }
 	void setOutCost(int out_cost_) { out_cost = out_cost_; }
 
 public:
+	static int ListGenerator(unsigned int length);
 	void Print();
 	int UpdateGene(int at, Gene blk);
 	int UpdateGene(std::vector<int> atlist, std::vector<Gene> genelist);
@@ -120,4 +132,14 @@ private:
 	void Print();
 	std::vector<int> SortInValue(std::vector<Gene> genelist);
 public:
+};
+
+class Mutation
+{
+
+public:
+	Mutation(Chromosome& set);
+	~Mutation() {}
+
+
 };

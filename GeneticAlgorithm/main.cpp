@@ -1,12 +1,14 @@
 #include "Genetic_Algorithm.h"
 
+
 int main()
 {
-
+	Chromosome::ListGenerator(NumofGene);
 	std::vector<Chromosome> Population = std::vector<Chromosome>(30);
 	int Generation = 1;
 	std::vector<int> Cost;
 	
+
 	// 1. Initialize Population
 	for (unsigned int i = 0; i < Population.size(); i++)
 	{
@@ -31,12 +33,13 @@ int main()
 	while (true)
 	{
 		Generation++;
-		Cost.push_back(stoi(Population[0].getCost()));
-		std::cout << "\n# of Generation: " << std::to_string(Generation) << std::endl;
+	
+	
 		// Sort the Chromosome with the cost.
 		// If the cost between two Chromosome are same, sort with the order of Chromosome.
 		std::sort(Population.begin(), Population.end());
-
+		Cost.push_back(stoi(Population[0].getCost()));	
+		std::cout << "\n# of Generation: " << std::to_string(Generation) << std::endl;
 		std::cout << "The Order of Cost is : ";
 		for (auto set : Population)
 			std::cout << set.getCost() << " ";
@@ -54,16 +57,18 @@ int main()
 		// 4. Make Next Generation by CrossOver Calculation
 		for (unsigned int i = 1; i < Population.size() / 2; i++)
 		{
-			std::cout << "Parent 1: " << std::endl;
-			Population[i].Print();
-			std::cout << "Partent 2: " << std::endl;
-			Population[i + 1].Print();
+			//std::cout << "Parent 1: " << std::endl;
+			//Population[i].Print();
+			//std::cout << "Partent 2: " << std::endl;
+			//Population[i + 1].Print();
 			CrossOver crossover(Population[i * 2 - 1], Population[i * 2]);
-			std::cout << "Child 1: " << std::endl;
-			Population[i].Print();
-			std::cout << "Child 2: " << std::endl;
-			Population[i + 1].Print();
+			//std::cout << "Child 1: " << std::endl;
+			//Population[i].Print();
+			//std::cout << "Child 2: " << std::endl;
+			//Population[i + 1].Print();
 		}
+
+		Mutation mutation(*Population.rbegin());
 	}
 
 	return 0;
