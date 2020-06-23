@@ -452,4 +452,11 @@ Mutation::Mutation(Chromosome & set)
 
 	Chromosome mutated(tmp_list);
 	set = std::move(mutated);
+	Print(set);
+}
+
+int Mutation::Print(Chromosome& set)
+{
+	std::cout << "The cost of Mutation Chromosome is " << set.getCost() << std::endl;
+	return 0;
 }

@@ -45,9 +45,8 @@ int main()
 			std::cout << set.getCost() << " ";
 		std::cout << "\n";
 		// 3. Check if  loop can be stopped.
-		// TODO: Conditional statement should be comparement of past one.
 		// If the value difference is not big, Stop GA.
-		if (Generation > 30 && (Cost.at(Cost.size()) - Cost.at(Cost.size() - 20)) < 2)
+		if (Generation > 50 && (Cost.at(Cost.size()) - Cost.at(Cost.size() - 20)) < 10)
 		{
 			std::cout << "The Least cost of chromosome is" << std::endl;
 			Population[0].Print();
@@ -68,8 +67,10 @@ int main()
 			//Population[i + 1].Print();
 		}
 
+		// Make Mutation with the last chromosome.
 		Mutation mutation(*Population.rbegin());
 	}
 
+	
 	return 0;
 }

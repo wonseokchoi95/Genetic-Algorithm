@@ -141,5 +141,7 @@ public:
 	Mutation(Chromosome& set);
 	~Mutation() {}
 
+private:
+	int Print(Chromosome& set);
 
 };
