@@ -38,6 +38,8 @@ int main()
 		// Sort the Chromosome with the cost.
 		// If the cost between two Chromosome are same, sort with the order of Chromosome.
 		std::sort(Population.begin(), Population.end());
+		
+		// Push back least cost of generation.
 		Cost.push_back(stoi(Population[0].getCost()));	
 		std::cout << "\n# of Generation: " << std::to_string(Generation) << std::endl;
 		std::cout << "The Order of Cost is : ";
@@ -46,7 +48,7 @@ int main()
 		std::cout << "\n";
 		// 3. Check if  loop can be stopped.
 		// If the value difference is not big, Stop GA.
-		if (Generation > 50 && (Cost.at(Cost.size()) - Cost.at(Cost.size() - 20)) < 10)
+		if (Generation > 50 && Cost.at(Cost.size()-1) - Cost.at(Cost.size() - 20) < 10)
 		{
 			std::cout << "The Least cost of chromosome is" << std::endl;
 			Population[0].Print();
@@ -56,15 +58,8 @@ int main()
 		// 4. Make Next Generation by CrossOver Calculation
 		for (unsigned int i = 1; i < Population.size() / 2; i++)
 		{
-			//std::cout << "Parent 1: " << std::endl;
-			//Population[i].Print();
-			//std::cout << "Partent 2: " << std::endl;
-			//Population[i + 1].Print();
+
 			CrossOver crossover(Population[i * 2 - 1], Population[i * 2]);
-			//std::cout << "Child 1: " << std::endl;
-			//Population[i].Print();
-			//std::cout << "Child 2: " << std::endl;
-			//Population[i + 1].Print();
 		}
 
 		// Make Mutation with the last chromosome.
