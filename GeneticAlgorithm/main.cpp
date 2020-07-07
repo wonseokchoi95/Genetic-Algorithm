@@ -14,7 +14,7 @@ int main()
 	{
 		std::string log;
 
-		std::vector<Chromosome> Population = std::vector<Chromosome>(30);
+		std::vector<Chromosome> Population = std::vector<Chromosome>(40);
 		int Generation = 1;
 		std::vector<int> Cost;
 
