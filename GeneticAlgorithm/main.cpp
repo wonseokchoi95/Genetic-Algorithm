@@ -74,7 +74,7 @@ int main()
 
 			// 3. Check if  loop can be stopped.
 			// If the value difference is not big, Stop GA.
-			if (Generation > 80 && abs(Cost.at(Cost.size() - 1) - Cost.at(Cost.size() - 20)) < 30)
+			if (Generation > 50 && abs(Cost.at(Cost.size() - 1) - Cost.at(Cost.size() - 20)) < 30)
 			{
 				std::cout << "The Least cost of chromosome is" << std::endl;
 				Population[0].Print();
