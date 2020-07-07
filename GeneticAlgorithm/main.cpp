@@ -4,7 +4,13 @@
 
 int main()
 {
+	std::ofstream w;
+	std::string p = "test.txt";
+	w.open(p);
+	if (w.is_open())
+		w << "sdfsd";
 	
+	w.close();
 	Chromosome::ListGenerator();
 	int numOfPopulation = 1;
 
@@ -77,6 +83,10 @@ int main()
 				std::string exportPath = std::experimental::filesystem::current_path().string() + "\\io\\population" + std::to_string(numOfPopulation) + ".txt";
 				std::ofstream writeFile;
 				writeFile.open(exportPath);
+				while (writeFile.is_open())
+				{
+					writeFile << log;
+				}
 				
 				break;
 			}
