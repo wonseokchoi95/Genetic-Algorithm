@@ -5,11 +5,23 @@
 #include <time.h>
 #include <Windows.h>
 #include <algorithm>
+#include <random>
+#include <iterator>
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
 
 const static int NumofGene = 100;
+static int RandomNumberGenerator(int min, int max)
+{
 
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(min, max);
+	return dis(gen);
+}
 struct Gene
 {
 	Gene(int x_, int y_, int in, int out)
@@ -48,6 +60,7 @@ class Chromosome {
 public:
 	Chromosome();
 	Chromosome(std::vector<InOut> list);
+
 	~Chromosome();
 
 	enum class DIRECTION {
@@ -71,6 +84,7 @@ private:
 	void setOutCost(int out_cost_) { out_cost = out_cost_; }
 
 public:
+	static int ListGenerator();
 	static int ListGenerator(unsigned int length);
 	void Print();
 	int UpdateGene(int at, Gene blk);
@@ -130,7 +144,6 @@ private:
 	std::vector<int> bit_array;
 	void BitArrayBuilder();
 	void Print();
-	std::vector<int> SortInValue(std::vector<Gene> genelist);
 public:
 };
 

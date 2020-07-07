@@ -9,24 +9,31 @@ Chromosome::Chromosome()
 	//ListGenerator(NumofGene);
 
 	order_ = NumofGene;
+
 	std::vector<int> order;
-	bool first_time = false;
-	while (order.size() != list.size())
-	{
-		Sleep(1);
-		int num = (unsigned int)rand() % list.size();
-		if (first_time == false)
-		{
-			order.push_back(num); first_time = true; continue;
-		}
-		for (unsigned int num_ = 0; num_ < order.size(); num_++)
-		{
-			if (num == order[num_])
-				break;
-			if ((num != order[num_]) && (num_ == order.size() - 1))
-				order.push_back(num);
-		}
-	}
+	for (int i = 0; i < 100; i++)
+		order.push_back(i);
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(order.begin(), order.end(), g);
+
+	//bool first_time = false;
+	//while (order.size() != list.size())
+	//{
+	//	Sleep(1);
+	//	int num = (unsigned int)rand() % list.size();
+	//	if (first_time == false)
+	//	{
+	//		order.push_back(num); first_time = true; continue;
+	//	}
+	//	for (unsigned int num_ = 0; num_ < order.size(); num_++)
+	//	{
+	//		if (num == order[num_])
+	//			break;
+	//		if ((num != order[num_]) && (num_ == order.size() - 1))
+	//			order.push_back(num);
+	//	}
+	//}
 	int iter = 0;
 	for (int y = 0; y < blk_y_size; y++)
 	{
@@ -108,6 +115,32 @@ int Chromosome::UpdateGene(std::vector<int> atlist, std::vector<Gene> genelist)
 	return 0;
 }
 
+
+int Chromosome::ListGenerator()
+{
+	std::string currentPath = std::experimental::filesystem::current_path().string();
+	std::string filePath = currentPath + "\\io\\InOut_List.txt";
+	std::ifstream in(filePath.data());
+
+	if (in.is_open())
+	{
+		int i = 0;
+		while (!in.eof())
+		{
+			std::string line;
+			std::getline(in, line);
+			std::string In(line.substr(0, line.find(' ')));
+			std::string Out(line.substr(line.find(' ') + 1, line.length()));
+			InOut tmp = { i, std::stoi(In), std::stoi(Out) };
+			list.push_back(tmp);
+			std::cout << tmp.In << " " << tmp.Out << std::endl;
+			i++;
+		}
+	}
+
+	return 0;
+}
+
 int Chromosome::ListGenerator(unsigned int length)
 {		
 	std::vector<int> in_order;
@@ -117,7 +150,7 @@ int Chromosome::ListGenerator(unsigned int length)
 	bool y_first_time = false;
 	while (in_order.size() != length) {
 
-
+		//int num = RandomNumberGenerator(0, length);
 		int num = (int)rand() % length + 1;
 		if (x_first_time == false)
 		{
@@ -153,16 +186,15 @@ int Chromosome::ListGenerator(unsigned int length)
 			if ((num != out_order[num_]) && (num_ == out_order.size() - 1))
 			{
 				out_order.push_back(num);
-				//std::cout << std::to_string(num) << " ";
 			}
 		}
 	}
 
-	//std::cout << "\n";
 	for (int i = 0; i < length; i++)
 	{
 		InOut tmp = { i, in_order[i], out_order[i] };
 		list.push_back(tmp);
+		std::cout << tmp.In << " " << tmp.Out << std::endl;
 	}
 	
 	return 0;
@@ -386,8 +418,8 @@ void CrossOver::BitArrayBuilder()
 {
 	for (int i = 0; i < length; i++)
 	{
-		int num = (unsigned int)rand() % 2;
-		bit_array.push_back(num);
+		int bit = RandomNumberGenerator(0, 1);
+		bit_array.push_back(bit);
 		Sleep(1);
 	}
 
@@ -405,11 +437,6 @@ void CrossOver::Print()
 	std::cout << "\n";
 }
 
-std::vector<int> CrossOver::SortInValue(std::vector<Gene>)
-{
-	return std::vector<int>();
-}
-
 Mutation::Mutation(Chromosome & set)
 {
 	std::vector<InOut> tmp_list;
@@ -422,23 +449,28 @@ Mutation::Mutation(Chromosome & set)
 	}
 
 	std::vector<int> order;
-	bool first_time = false;
-	while (order.size() != list.size())
-	{
-		Sleep(1);
-		int num = (unsigned int)rand() % list.size();
-		if (first_time == false)
-		{
-			order.push_back(num); first_time = true; continue;
-		}
-		for (unsigned int num_ = 0; num_ < order.size(); num_++)
-		{
-			if (num == order[num_])
-				break;
-			if ((num != order[num_]) && (num_ == order.size() - 1))
-				order.push_back(num);
-		}
-	}
+	for (int i = 0; i < 100; i++)
+		order.push_back(i);
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(order.begin(), order.end(), g);
+	//bool first_time = false;
+	//while (order.size() != list.size())
+	//{
+	//	Sleep(1);
+	//	int num = (unsigned int)rand() % list.size();
+	//	if (first_time == false)
+	//	{
+	//		order.push_back(num); first_time = true; continue;
+	//	}
+	//	for (unsigned int num_ = 0; num_ < order.size(); num_++)
+	//	{
+	//		if (num == order[num_])
+	//			break;
+	//		if ((num != order[num_]) && (num_ == order.size() - 1))
+	//			order.push_back(num);
+	//	}
+	//}
 	int j = 0;
 	for (auto& inout : tmp_list)
 	{
@@ -448,7 +480,6 @@ Mutation::Mutation(Chromosome & set)
 		}
 		j++;
 	}
-
 
 	Chromosome mutated(tmp_list);
 	set = std::move(mutated);
