@@ -4,13 +4,7 @@
 
 int main()
 {
-	std::ofstream w;
-	std::string p = "test.txt";
-	w.open(p);
-	if (w.is_open())
-		w << "sdfsd";
 	
-	w.close();
 	Chromosome::ListGenerator();
 	int numOfPopulation = 1;
 
@@ -74,7 +68,7 @@ int main()
 
 			// 3. Check if  loop can be stopped.
 			// If the value difference is not big, Stop GA.
-			if (Generation > 80 && abs(Cost.at(Cost.size() - 1) - Cost.at(Cost.size() - 20)) < 30)
+			if (Generation > 50 && abs(Cost.at(Cost.size() - 1) - Cost.at(Cost.size() - 20)) < 30)
 			{
 				std::cout << "The Least cost of chromosome is" << std::endl;
 				Population[0].Print();
@@ -83,10 +77,13 @@ int main()
 				std::string exportPath = std::experimental::filesystem::current_path().string() + "\\io\\population" + std::to_string(numOfPopulation) + ".txt";
 				std::ofstream writeFile;
 				writeFile.open(exportPath);
-				while (writeFile.is_open())
-				{
+
+				if (writeFile.is_open())
 					writeFile << log;
-				}
+				
+				writeFile.close();
+				numOfPopulation++;
+				log.clear();
 				
 				break;
 			}
@@ -105,4 +102,3 @@ int main()
 	
 	return 0;
 }
-
