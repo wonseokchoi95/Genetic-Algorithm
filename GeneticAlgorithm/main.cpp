@@ -4,7 +4,7 @@
 
 int main()
 {
-
+	
 	Chromosome::ListGenerator();
 	int numOfPopulation = 9;
 
@@ -77,12 +77,14 @@ int main()
 				std::string exportPath = std::experimental::filesystem::current_path().string() + "\\io\\population" + std::to_string(numOfPopulation) + ".txt";
 				std::ofstream writeFile;
 				writeFile.open(exportPath);
+
 				if (writeFile.is_open())
-				{
 					writeFile << log;
-				}
+				
 				writeFile.close();
 				numOfPopulation++;
+				log.clear();
+				
 				break;
 			}
 
@@ -100,4 +102,3 @@ int main()
 	
 	return 0;
 }
-
