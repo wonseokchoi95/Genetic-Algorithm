@@ -4,15 +4,9 @@
 
 int main()
 {
-	std::ofstream w;
-	std::string p = "test.txt";
-	w.open(p);
-	if (w.is_open())
-		w << "sdfsd";
-	
-	w.close();
+
 	Chromosome::ListGenerator();
-	int numOfPopulation = 1;
+	int numOfPopulation = 9;
 
 
 	// Run GA 100 times.
@@ -20,7 +14,7 @@ int main()
 	{
 		std::string log;
 
-		std::vector<Chromosome> Population = std::vector<Chromosome>(40);
+		std::vector<Chromosome> Population = std::vector<Chromosome>(30);
 		int Generation = 1;
 		std::vector<int> Cost;
 
@@ -83,11 +77,12 @@ int main()
 				std::string exportPath = std::experimental::filesystem::current_path().string() + "\\io\\population" + std::to_string(numOfPopulation) + ".txt";
 				std::ofstream writeFile;
 				writeFile.open(exportPath);
-				while (writeFile.is_open())
+				if (writeFile.is_open())
 				{
 					writeFile << log;
 				}
-				
+				writeFile.close();
+				numOfPopulation++;
 				break;
 			}
 
